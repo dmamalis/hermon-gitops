@@ -21,7 +21,6 @@ spec:
           args:
             - --config
             - /etc/telegraf/telegraf.conf
-            - --non-strict-env-handling
           env:
             - name: TS_PG_CONN
               valueFrom:
