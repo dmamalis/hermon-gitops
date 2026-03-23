@@ -25,8 +25,18 @@ spec:
             - name: TS_PG_CONN
               valueFrom:
                 secretKeyRef:
-                  name: telegraf-secret
+                  name: telegraf-db-secret
                   key: TS_PG_CONN
+            - name: TTN_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: telegraf-ttn-secret
+                  key: TTN_USERNAME
+            - name: TTN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: telegraf-ttn-secret
+                  key: TTN_PASSWORD
           ports:
             - containerPort: 5001
               name: http
