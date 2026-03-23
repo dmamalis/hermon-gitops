@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hermon-ingest
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hermon-ingest
+  template:
+    metadata:
+      labels:
+        app: hermon-ingest
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      containers:
+        - name: hermon-ingest
+          image: ghcr.io/dmamalis/hermon-ingest:v0.1.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5000
+              name: http
+          envFrom:
+            - configMapRef:
+                name: hermon-ingest-config
+          readinessProbe:
+            tcpSocket:
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: 5000
+            initialDelaySeconds: 15
+            periodSeconds: 10
