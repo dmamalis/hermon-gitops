@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: telegraf-config
+data:
+  telegraf.conf: |
+    [agent]
+      debug = true
+      interval = "10s"
+      round_interval = true
+      metric_batch_size = 1000
+      metric_buffer_limit = 10000
+      flush_interval = "10s"
+      flush_jitter = "0s"
+      precision = ""
+      quiet = false
+      logfile = ""
+      hostname = ""
+      omit_hostname = false
+
+    [[outputs.postgresql]]
+      connection = "$TS_PG_CONN"
+      namepass = ["data"]
+      schema = "public"
+      timestamp_column_name = "time"
+
+    [[processors.enum]]
+      tagpass = { source = ["http"] }
+
+      [[processors.enum.mapping]]
+        tags = ["device"]
+        dest = "device"
+        default = "unknown"
+
+        [processors.enum.mapping.value_mappings]
+          "E8DB84071451" = "hermon-00"
+          "E8DB84079EE5" = "hermon-05"
+
+    [[inputs.http_listener_v2]]
+      name_override = "data"
+      service_address = ":5001"
+      paths = ["/telegraf"]
+      methods = ["POST"]
+      data_format = "json"
+      tag_keys = ["device"]
+
+      [inputs.http_listener_v2.tags]
+        source = "http"

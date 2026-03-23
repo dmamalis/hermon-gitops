@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: telegraf
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: telegraf
+  template:
+    metadata:
+      labels:
+        app: telegraf
+    spec:
+      containers:
+        - name: telegraf
+          image: telegraf:1.32
+          imagePullPolicy: IfNotPresent
+          command:
+            - telegraf
+          args:
+            - --config
+            - /etc/telegraf/telegraf.conf
+            - --non-strict-env-handling
+          env:
+            - name: TS_PG_CONN
+              valueFrom:
+                secretKeyRef:
+                  name: telegraf-secret
+                  key: TS_PG_CONN
+          ports:
+            - containerPort: 5001
+              name: http
+          volumeMounts:
+            - name: telegraf-config
+              mountPath: /etc/telegraf/telegraf.conf
+              subPath: telegraf.conf
+          readinessProbe:
+            tcpSocket:
+              port: 5001
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: 5001
+            initialDelaySeconds: 15
+            periodSeconds: 10
+      volumes:
+        - name: telegraf-config
+          configMap:
+            name: telegraf-config
