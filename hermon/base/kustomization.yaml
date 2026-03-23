@@ -8,3 +8,4 @@ resources:
   - timescaledb
   - hermon-ingest
   - telegraf
+  - grafana

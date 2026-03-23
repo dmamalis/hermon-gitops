@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+        - name: grafana
+          image: grafana/grafana-oss:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: GF_SECURITY_ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: grafana-secret
+                  key: GF_SECURITY_ADMIN_USER
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: grafana-secret
+                  key: GF_SECURITY_ADMIN_PASSWORD
+            - name: GRAFANA_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: grafana-secret
+                  key: GRAFANA_DB_USER
+            - name: GRAFANA_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: grafana-secret
+                  key: GRAFANA_DB_PASSWORD
+            - name: GRAFANA_DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: grafana-secret
+                  key: GRAFANA_DB_NAME
+            - name: GF_PLUGINS_PREINSTALL
+              value: nline-plotlyjs-panel
+          ports:
+            - containerPort: 3000
+              name: http
+          volumeMounts:
+            - name: datasource-config
+              mountPath: /etc/grafana/provisioning/datasources/hermon-timescale.yaml
+              subPath: hermon-timescale.yaml
+            - name: dashboard-provider-config
+              mountPath: /etc/grafana/provisioning/dashboards/hermon-dashboards.yaml
+              subPath: hermon-dashboards.yaml
+            - name: dashboard-data
+              mountPath: /var/lib/grafana/dashboards/hermon-v3-timescale.json
+              subPath: hermon-v3-timescale.json
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+      volumes:
+        - name: datasource-config
+          configMap:
+            name: grafana-datasource-config
+        - name: dashboard-provider-config
+          configMap:
+            name: grafana-dashboard-provider-config
+        - name: dashboard-data
+          configMap:
+            name: grafana-dashboard-data

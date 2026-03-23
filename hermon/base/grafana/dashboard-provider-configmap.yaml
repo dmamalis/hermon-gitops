@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-provider-config
+data:
+  hermon-dashboards.yaml: |
+    apiVersion: 1
+    
+    providers:
+      - name: Hermon dashboards
+        orgId: 1
+        folder: Hermon
+        type: file
+        disableDeletion: false
+        updateIntervalSeconds: 10
+        allowUiUpdates: false
+        options:
+          path: /var/lib/grafana/dashboards
