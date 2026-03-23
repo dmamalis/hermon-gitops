@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: telegraf
-          image: telegraf:1.25.0
+          image: telegraf@sha256:d1a485308163ea51f8a07b659a71cba8e1eddcaf8473a25c00e34e363e8b3775
           imagePullPolicy: IfNotPresent
           command:
             - telegraf
