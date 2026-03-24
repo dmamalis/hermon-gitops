@@ -48,6 +48,8 @@ spec:
             - containerPort: 3000
               name: http
           volumeMounts:
+            - name: grafana-storage
+              mountPath: /var/lib/grafana
             - name: datasource-config
               mountPath: /etc/grafana/provisioning/datasources/hermon-timescale.yaml
               subPath: hermon-timescale.yaml
@@ -55,14 +57,13 @@ spec:
               mountPath: /etc/grafana/provisioning/dashboards/hermon-dashboards.yaml
               subPath: hermon-dashboards.yaml
             - name: dashboard-data
-              mountPath: /var/lib/grafana/dashboards/hermon-v3-timescale.json
-              subPath: hermon-v3-timescale.json
+              mountPath: /var/lib/grafana/dashboards
           startupProbe:
             httpGet:
               path: /api/health
               port: 3000
             periodSeconds: 10
-            failureThreshold: 30
+            failureThreshold: 90
           readinessProbe:
             httpGet:
               path: /api/health
@@ -73,9 +74,11 @@ spec:
             httpGet:
               path: /api/health
               port: 3000
-            initialDelaySeconds: 10
+            initialDelaySeconds: 30
             periodSeconds: 10
       volumes:
+        - name: grafana-storage
+          emptyDir: {}
         - name: datasource-config
           configMap:
             name: grafana-datasource-config
