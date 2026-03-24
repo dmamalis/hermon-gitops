@@ -21,6 +21,8 @@ spec:
           args:
             - --config
             - /etc/telegraf/telegraf.conf
+            - --config-directory
+            - /etc/telegraf/conf.available
           env:
             - name: TS_PG_CONN
               valueFrom:
@@ -42,8 +44,8 @@ spec:
               name: http
           volumeMounts:
             - name: telegraf-config
-              mountPath: /etc/telegraf/telegraf.conf
-              subPath: telegraf.conf
+              mountPath: /etc/telegraf
+              readOnly: true
           readinessProbe:
             tcpSocket:
               port: 5001
@@ -56,5 +58,20 @@ spec:
             periodSeconds: 10
       volumes:
         - name: telegraf-config
-          configMap:
-            name: telegraf-config
+          projected:
+            sources:
+              - configMap:
+                  name: telegraf-config-base
+                  items:
+                    - key: telegraf.conf
+                      path: telegraf.conf
+              - configMap:
+                  name: telegraf-config-mqtt-public
+                  items:
+                    - key: inputs-mqtt-public.conf
+                      path: conf.available/inputs-mqtt-public.conf
+              - configMap:
+                  name: telegraf-config-mqtt-ttn
+                  items:
+                    - key: inputs-mqtt-ttn.conf
+                      path: conf.available/inputs-mqtt-ttn.conf
