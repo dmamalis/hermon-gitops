@@ -42,7 +42,6 @@ spec:
                 secretKeyRef:
                   name: grafana-secret
                   key: GRAFANA_DB_NAME
-            - name: GF_PLUGINS_PREINSTALL
               value: nline-plotlyjs-panel
           ports:
             - containerPort: 3000
