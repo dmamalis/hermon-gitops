@@ -42,6 +42,7 @@ spec:
                 secretKeyRef:
                   name: grafana-secret
                   key: GRAFANA_DB_NAME
+            - name: GF_PLUGINS_PREINSTALL
               value: nline-plotlyjs-panel
           ports:
             - containerPort: 3000
@@ -56,17 +57,23 @@ spec:
             - name: dashboard-data
               mountPath: /var/lib/grafana/dashboards/hermon-v3-timescale.json
               subPath: hermon-v3-timescale.json
+          startupProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            periodSeconds: 10
+            failureThreshold: 30
           readinessProbe:
             httpGet:
               path: /api/health
               port: 3000
-            initialDelaySeconds: 10
+            initialDelaySeconds: 5
             periodSeconds: 5
           livenessProbe:
             httpGet:
               path: /api/health
               port: 3000
-            initialDelaySeconds: 30
+            initialDelaySeconds: 10
             periodSeconds: 10
       volumes:
         - name: datasource-config
