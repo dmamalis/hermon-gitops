@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: grafana
-          image: grafana/grafana-oss:latest
+          image: grafana/grafana-oss@sha256:e932bd6ed0e026595b08483cd0141e5103e1ab7ff8604839ff899b8dc54cabcb
           imagePullPolicy: IfNotPresent
           env:
             - name: GF_SECURITY_ADMIN_USER
