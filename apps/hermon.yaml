@@ -5,10 +5,17 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  source:
-    repoURL: git@github.com:dmamalis/hermon-gitops.git
-    targetRevision: main
-    path: hermon/base
+  sources:
+    - repoURL: git@github.com:dmamalis/hermon-ingest.git
+      targetRevision: main
+      path: deploy/charts/hermon
+      helm:
+        valueFiles:
+          - $values/hermon/values/k3s-lab.yaml
+    - repoURL: git@github.com:dmamalis/hermon-gitops.git
+      targetRevision: main
+      ref: values
+      path: hermon/support
   destination:
     server: https://kubernetes.default.svc
     namespace: hermon
