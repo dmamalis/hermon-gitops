@@ -36,3 +36,7 @@ Current rule:
 
 This keeps application config aligned with the deployed Kubernetes manifests.
 
+## Operational documentation
+
+- Secret handling: `hermon/docs/secret-handling.md`
+
