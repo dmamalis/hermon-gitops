@@ -27,6 +27,29 @@ spec:
                 secretKeyRef:
                   name: grafana-secret
                   key: GF_SECURITY_ADMIN_PASSWORD
+
+            - name: GF_DATABASE_TYPE
+              value: postgres
+            - name: GF_DATABASE_HOST
+              value: timescaledb:5432
+            - name: GF_DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: grafana-secret
+                  key: GF_DATABASE_NAME
+            - name: GF_DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: grafana-secret
+                  key: GF_DATABASE_USER
+            - name: GF_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: grafana-secret
+                  key: GF_DATABASE_PASSWORD
+            - name: GF_DATABASE_SSL_MODE
+              value: disable
+
             - name: GRAFANA_DB_USER
               valueFrom:
                 secretKeyRef:
@@ -42,6 +65,7 @@ spec:
                 secretKeyRef:
                   name: grafana-secret
                   key: GRAFANA_DB_NAME
+
             - name: GF_PLUGINS_PREINSTALL
               value: nline-plotlyjs-panel
           ports:
