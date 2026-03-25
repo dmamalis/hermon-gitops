@@ -1,42 +1,43 @@
 # hermon-gitops
 
-Kubernetes / GitOps deployment repository for Hermon.
+GitOps environment repository for Hermon.
 
-## Scope
-This repository contains:
+## Active role
+
+This repository now owns the **environment-specific deployment side** of Hermon:
+
+- Argo CD Application definitions
+- environment values files
+- support manifests that remain cluster-local
+- cluster-facing operational documentation
+
+## Active deployment model
+
+Hermon is now deployed through:
+
+- chart/package source from `hermon-ingest`
+- environment values from `hermon-gitops/hermon/values/`
+- support manifests from `hermon-gitops/hermon/support/`
+
+## What stays here
+
+This repository should keep:
+
 - Argo CD applications
-- Kubernetes manifests
-- Kustomize structure
-- cluster deployment configuration
+- environment-specific values
+- namespace/support manifests
+- cluster-local config such as `hermon-ingest-config`
+- cluster-facing docs
 
-## Out of scope
-This repository does not contain:
-- ingest / decoder source code
-- Docker-oriented development workflow
-- application business logic
+## What no longer belongs as the active model
 
-Those live in the separate `hermon-ingest` repository.
+This repository is no longer the primary home of the full app stack manifests.
 
-## Initial goal
-Deploy a minimal Hermon stack to k3s with Argo CD:
-- TimescaleDB
-- ingest service
-- Telegraf
-- Grafana
+The previous Kustomize app stack has been archived under:
 
+- `hermon/archive/base-kustomize/`
 
-## Sync rule with `hermon-ingest`
+## Boundary
 
-Some application-facing configuration is authored first in the `hermon-ingest` repository and then mirrored into this GitOps repository.
-
-Current rule:
-- `telegraf/telegraf.conf` in `hermon-ingest` is the canonical Telegraf config
-- Grafana provisioning and dashboard files in `hermon-ingest/grafana/` are the canonical app-layer Grafana assets
-- when those files change, the equivalent ConfigMap-backed manifests in `hermon-gitops` must be updated in the same change set or immediately after
-
-This keeps application config aligned with the deployed Kubernetes manifests.
-
-## Operational documentation
-
-- Secret handling: `hermon/docs/secret-handling.md`
-
+- `hermon-ingest` owns app behavior, packaged deploy content, and local Docker/Compose workflow
+- `hermon-gitops` owns environment choices, promotion, and cluster-side concerns
