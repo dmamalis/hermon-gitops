@@ -1,0 +1,54 @@
+namespaceOverride: hermon-dev
+
+hermonIngest:
+  image:
+    repository: ghcr.io/dmamalis/hermon-ingest
+    tag: v0.1.2
+    pullPolicy: IfNotPresent
+    pullSecretName: ghcr-pull-secret
+  service:
+    port: 5000
+  ingress:
+    enabled: false
+    className: ""
+    host: ""
+    annotations: {}
+  configMapName: hermon-ingest-config
+
+telegraf:
+  image:
+    repository: telegraf
+    tag: sha256:d1a485308163ea51f8a07b659a71cba8e1eddcaf8473a25c00e34e363e8b3775
+    useDigest: true
+    pullPolicy: IfNotPresent
+  service:
+    port: 5001
+  secretNames:
+    db: telegraf-db-secret
+    ttn: telegraf-ttn-secret
+
+grafana:
+  image:
+    repository: grafana/grafana-oss
+    tag: sha256:e932bd6ed0e026595b08483cd0141e5103e1ab7ff8604839ff899b8dc54cabcb
+    useDigest: true
+    pullPolicy: IfNotPresent
+  service:
+    port: 3000
+  ingress:
+    enabled: false
+    className: ""
+    host: ""
+    annotations: {}
+  secretName: grafana-secret
+
+timescaledb:
+  image:
+    repository: timescale/timescaledb
+    tag: 2.25.2-pg16
+    pullPolicy: IfNotPresent
+  service:
+    port: 5432
+  secretName: timescaledb-auth
+  persistence:
+    size: 5Gi
