@@ -180,13 +180,13 @@ Why this matters:
 - pre-production packaging should not leave this undefined for core workloads
 
 Recommended pre-production direction:
-- define simple conservative defaults for:
-  - `hermon-ingest`
-  - `telegraf`
-  - `grafana`
+- do not guess shared base values yet
+- treat resource policy as environment-specific unless there is an immediate operational need
+- later define resource defaults through a cluster-specific overlay or Helm values
+- introduce them first where measurement or cluster pressure justifies them
 
 Priority:
-- high
+- medium
 
 ---
 
@@ -355,7 +355,7 @@ Current gaps:
 
 Before calling Hermon production-packaging-ready, the minimum worthwhile hardening improvements are:
 
-1. define resource requests/limits for `hermon-ingest`, `telegraf`, and `grafana`
+1. decide whether resource policy should remain environment-specific for now instead of being added to the shared base
 2. review and add explicit `securityContext` settings where compatible
 3. review non-root execution for all workloads
 4. review whether ingest ingress needs tighter restrictions than the current simple HTTP exposure
