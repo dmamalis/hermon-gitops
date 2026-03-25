@@ -1,0 +1,45 @@
+# Hermon Repo Ownership Inventory
+
+This file tracks boundary decisions between `hermon-ingest` and `hermon-gitops`.
+
+## Labels
+
+- **canonical** = authoritative source of truth
+- **deployment copy** = copy kept in `hermon-gitops` for Kubernetes packaging or mounting
+- **cluster-local only** = exists only for Kubernetes/Argo/cluster behavior
+
+---
+
+## Telegraf
+
+| File / category | Current repo | Should be canonical in | Label | Action | Notes |
+|---|---|---|---|---|---|
+| `telegraf/telegraf.conf` | hermon-ingest | hermon-ingest | canonical | keep | canonical base Telegraf app config |
+| `telegraf/conf.available/inputs-mqtt-public.conf` | hermon-ingest | hermon-ingest | canonical | keep | optional canonical input fragment |
+| `telegraf/conf.available/inputs-mqtt-ttn.conf` | hermon-ingest | hermon-ingest | canonical | keep | optional canonical input fragment |
+| `compose/env/telegraf.env.example` | hermon-ingest | hermon-ingest | canonical | keep | app-facing safe example env |
+| `telegraf/README.md` | hermon-ingest | hermon-ingest | canonical | keep | app-facing Telegraf documentation |
+| `compose/archive/telegraf.compose.yaml` | hermon-ingest | hermon-ingest | canonical | keep | archive/local historical asset, not cluster wiring |
+| `telegraf/archive/full-legacy.conf` | hermon-ingest | hermon-ingest | canonical | keep | archived historical reference, not active deployment source |
+| `hermon/base/telegraf/assets/telegraf.conf` | hermon-gitops | hermon-ingest | deployment copy | keep and mark | deployment copy for Kustomize/ConfigMap packaging |
+| `hermon/base/telegraf/assets/conf.available/inputs-mqtt-public.conf` | hermon-gitops | hermon-ingest | deployment copy | keep and mark | deployment copy of canonical fragment |
+| `hermon/base/telegraf/assets/conf.available/inputs-mqtt-ttn.conf` | hermon-gitops | hermon-ingest | deployment copy | keep and mark | deployment copy of canonical fragment |
+| `hermon/base/telegraf/deployment.yaml` | hermon-gitops | hermon-gitops | cluster-local only | keep | Kubernetes deployment wiring |
+| `hermon/base/telegraf/service.yaml` | hermon-gitops | hermon-gitops | cluster-local only | keep | Kubernetes service definition |
+| `hermon/base/telegraf/kustomization.yaml` | hermon-gitops | hermon-gitops | cluster-local only | keep | Kustomize packaging and ConfigMap generation |
+| secret refs in Telegraf manifests | hermon-gitops | hermon-gitops | cluster-local only | keep | cluster secret references belong in deployment repo |
+| Telegraf volume mounts / manifest wiring | hermon-gitops | hermon-gitops | cluster-local only | keep | deployment-only concern |
+
+## Telegraf boundary assessment
+
+Current Telegraf ownership is already close to the desired target model:
+
+- canonical app-layer config lives in `hermon-ingest`
+- Kubernetes wiring lives in `hermon-gitops`
+- `hermon-gitops` keeps file-based deployment copies for packaging/mounting
+
+Follow-up rule:
+
+- update canonical Telegraf config in `hermon-ingest` first
+- then sync the corresponding deployment copy in `hermon-gitops`
+- do not evolve the GitOps copy independently
