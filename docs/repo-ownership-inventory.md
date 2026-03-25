@@ -79,3 +79,69 @@ Follow-up rule:
 - update canonical Grafana assets in `hermon-ingest` first
 - then sync the corresponding deployment copy in `hermon-gitops`
 - do not evolve the GitOps copy independently
+
+---
+
+## Env examples
+
+| File / category | Current repo | Should be canonical in | Label | Action | Notes |
+|---|---|---|---|---|---|
+| `compose/env/decoder.env.example` | hermon-ingest | hermon-ingest | canonical | keep | app-facing decoder example env |
+| `compose/env/grafana.env.example` | hermon-ingest | hermon-ingest | canonical | keep | app-facing Grafana example env |
+| `compose/env/telegraf.env.example` | hermon-ingest | hermon-ingest | canonical | keep | app-facing Telegraf example env |
+| `compose/env/timescale.env.example` | hermon-ingest | hermon-ingest | canonical | keep | app-facing local Timescale example env |
+| cluster secret references in manifests | hermon-gitops | hermon-gitops | cluster-local only | keep | secret refs belong in deployment repo |
+| committed `*.env.example` files in `hermon-gitops` | none currently | hermon-ingest by default | n/a | none | current boundary is clean |
+
+## Env example boundary assessment
+
+Current env example ownership is clean:
+
+- safe example env files live in `hermon-ingest`
+- cluster secret refs stay in `hermon-gitops`
+- no duplicate env-example layer currently exists in GitOps
+
+Follow-up rule:
+
+- new app-facing example env files should default to `hermon-ingest`
+- `hermon-gitops` should reference secrets, not become a second home for example env files
+
+---
+
+## Documentation
+
+| File / category | Current repo | Should be canonical in | Label | Action | Notes |
+|---|---|---|---|---|---|
+| `README.md` (root, ingest) | hermon-ingest | hermon-ingest | canonical | keep | root app/local scope README |
+| `AGENTS.md` (ingest) | hermon-ingest | hermon-ingest | canonical | keep | repo-local instructions for ingest repo |
+| `compose/README.md` | hermon-ingest | hermon-ingest | canonical | keep | local Compose workflow documentation |
+| `decoder/README.md` | hermon-ingest | hermon-ingest | canonical | keep | app component documentation |
+| `telegraf/README.md` | hermon-ingest | hermon-ingest | canonical | keep | app-layer Telegraf documentation |
+| `docs/image-versioning-policy.md` | hermon-ingest | hermon-ingest | canonical | keep for now | shared cross-repo policy doc currently authored here; GitOps should reference rather than duplicate |
+| `README.md` (root, gitops) | hermon-gitops | hermon-gitops | canonical | keep | root cluster/deployment scope README |
+| `AGENTS.md` (gitops) | hermon-gitops | hermon-gitops | canonical | keep | repo-local instructions for GitOps repo |
+| `hermon/docs/access-and-validation.md` | hermon-gitops | hermon-gitops | canonical | keep | cluster-facing validation and access doc |
+| `docs/repo-ownership-boundaries.md` | hermon-gitops | hermon-gitops | canonical | keep | repo-boundary policy doc |
+| `docs/repo-ownership-inventory.md` | hermon-gitops | hermon-gitops | canonical | keep | working ownership inventory |
+| `hermon/base/telegraf/assets/README.md` | hermon-gitops | hermon-gitops | canonical | keep | deployment-copy guidance for Telegraf assets |
+| `hermon/base/grafana/assets/README.md` | hermon-gitops | hermon-gitops | canonical | keep | deployment-copy guidance for Grafana assets |
+
+## Documentation boundary assessment
+
+Current documentation ownership is mostly clean:
+
+- app-facing and local workflow docs live in `hermon-ingest`
+- cluster-facing deployment and validation docs live in `hermon-gitops`
+- repo-local instruction files stay in their respective repos
+
+Notable ambiguous item:
+
+- `hermon-ingest/docs/image-versioning-policy.md` is a cross-repo policy document
+- safest current choice is to keep it canonical in `hermon-ingest`
+- `hermon-gitops` should reference this policy rather than duplicate it
+
+Follow-up rule:
+
+- if a doc explains how to run, build, configure, or understand the app, it belongs in `hermon-ingest`
+- if a doc explains how the cluster deploys, exposes, validates, or reconciles Hermon, it belongs in `hermon-gitops`
+- if a doc is cross-repo policy, keep a single canonical copy and link to it from the other repo
