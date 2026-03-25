@@ -24,8 +24,10 @@ telegraf:
   service:
     port: 5001
   secretNames:
-    db: telegraf-db-secret
     ttn: telegraf-ttn-secret
+
+telemetry:
+  secretName: telemetry-db-secret
 
 grafana:
   image:
