@@ -3,7 +3,7 @@ namespaceOverride: hermon
 hermonIngest:
   image:
     repository: ghcr.io/dmamalis/hermon-ingest
-    tag: v0.1.1
+    tag: v0.1.0
     pullPolicy: IfNotPresent
     pullSecretName: ghcr-pull-secret
   service:
