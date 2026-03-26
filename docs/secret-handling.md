@@ -85,7 +85,8 @@ Never commit:
 
 2. Fill in real local values in the untracked file.
 
-3. Create the secrets in the target namespace using a local bootstrap script.
+3. Create or update the secrets in the target namespace:
+   - `./scripts/bootstrap-hermon-dev-secrets.sh hermon/examples/dev-secrets.env`
 
 4. Apply or refresh the Argo CD application.
 

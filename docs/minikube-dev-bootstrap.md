@@ -56,13 +56,14 @@ Recommended approach:
 
 1. Copy the local example env template.
 2. Fill in real values locally.
-3. Create the secrets in the target namespace using a local bootstrap script or `kubectl create secret`.
+3. Run the local secret bootstrap script.
 
-Example local preparation:
+Example:
 
 ~~~bash
 cp hermon/examples/dev-secrets.env.example hermon/examples/dev-secrets.env
 # edit hermon/examples/dev-secrets.env locally
+./scripts/bootstrap-hermon-dev-secrets.sh hermon/examples/dev-secrets.env
 ~~~
 
 Required secrets:
