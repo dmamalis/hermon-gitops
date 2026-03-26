@@ -11,11 +11,15 @@ Bring up a reproducible local dev cluster that matches the production-shaped flo
 ## Bootstrap order
 
 ### 1. Start Minikube and install Argo CD
+
 Use:
 
-- `scripts/bootstrap-minikube-argo.sh`
+~~~bash
+scripts/bootstrap-minikube-argo.sh
+~~~
 
 ### 2. Prepare a dedicated GitHub SSH key for Argo CD
+
 Important rules:
 
 - use a dedicated key for Minikube Argo access
@@ -37,20 +41,48 @@ cat ~/.ssh/hermon_minikube_argocd.pub
 ~~~
 
 ### 3. Install Argo repo credentials
+
 Use:
 
 ~~~bash
 ./scripts/bootstrap-argocd-github-creds.sh ~/.ssh/hermon_minikube_argocd
 ~~~
 
-### 4. Apply the dev application
+### 4. Bootstrap Hermon runtime secrets
+
+Before applying the dev application, create the required runtime secrets in `hermon-dev`.
+
+Recommended approach:
+
+1. Copy the local example env template.
+2. Fill in real values locally.
+3. Create the secrets in the target namespace using a local bootstrap script or `kubectl create secret`.
+
+Example local preparation:
+
+~~~bash
+cp hermon/examples/dev-secrets.env.example hermon/examples/dev-secrets.env
+# edit hermon/examples/dev-secrets.env locally
+~~~
+
+Required secrets:
+
+- `timescaledb-auth`
+- `telemetry-db-secret`
+- `grafana-secret`
+- `telegraf-ttn-secret`
+- `ghcr-pull-secret`
+
+### 5. Apply the dev application
+
 Use:
 
 ~~~bash
 kubectl --context hermon-dev apply -f apps/hermon-dev.yaml
 ~~~
 
-### 5. Refresh and inspect
+### 6. Refresh and inspect
+
 Use:
 
 ~~~bash
@@ -58,6 +90,7 @@ kubectl --context hermon-dev -n argocd annotate application hermon-dev \
   argocd.argoproj.io/refresh=hard --overwrite
 
 kubectl --context hermon-dev -n argocd get application hermon-dev
+
 kubectl --context hermon-dev -n argocd get application hermon-dev -o yaml | sed -n '/status:/,$p'
 ~~~
 
