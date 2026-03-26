@@ -7,7 +7,7 @@ if [[ ! -f "$ENV_FILE" ]]; then
   echo "ERROR: env file not found: $ENV_FILE" >&2
   echo "Example:" >&2
   echo "  cp hermon/examples/dev-secrets.env.example hermon/examples/dev-secrets.env" >&2
-  echo "  \$EDITOR hermon/examples/dev-secrets.env" >&2
+  echo "  ${EDITOR:-nano} hermon/examples/dev-secrets.env" >&2
   exit 1
 fi
 
@@ -80,11 +80,14 @@ maybe_create_ghcr_secret() {
 require_vars \
   POSTGRES_USER \
   POSTGRES_PASSWORD \
+  POSTGRES_DB \
   TELEMETRY_DB_NAME \
   TELEMETRY_WRITER_USER \
   TELEMETRY_WRITER_PASSWORD \
   TELEMETRY_READER_USER \
   TELEMETRY_READER_PASSWORD \
+  GF_SECURITY_ADMIN_USER \
+  GF_SECURITY_ADMIN_PASSWORD \
   GF_DATABASE_NAME \
   GF_DATABASE_USER \
   GF_DATABASE_PASSWORD
@@ -92,11 +95,14 @@ require_vars \
 require_not_placeholder \
   POSTGRES_USER \
   POSTGRES_PASSWORD \
+  POSTGRES_DB \
   TELEMETRY_DB_NAME \
   TELEMETRY_WRITER_USER \
   TELEMETRY_WRITER_PASSWORD \
   TELEMETRY_READER_USER \
   TELEMETRY_READER_PASSWORD \
+  GF_SECURITY_ADMIN_USER \
+  GF_SECURITY_ADMIN_PASSWORD \
   GF_DATABASE_NAME \
   GF_DATABASE_USER \
   GF_DATABASE_PASSWORD
@@ -106,6 +112,7 @@ kubectl create namespace "$NAMESPACE" --dry-run=client -o yaml | kubectl apply -
 kubectl -n "$NAMESPACE" create secret generic timescaledb-auth \
   --from-literal=POSTGRES_USER="$POSTGRES_USER" \
   --from-literal=POSTGRES_PASSWORD="$POSTGRES_PASSWORD" \
+  --from-literal=POSTGRES_DB="$POSTGRES_DB" \
   --dry-run=client -o yaml | kubectl apply -f -
 
 echo "Created/updated secret: timescaledb-auth"
@@ -121,6 +128,8 @@ kubectl -n "$NAMESPACE" create secret generic telemetry-db-secret \
 echo "Created/updated secret: telemetry-db-secret"
 
 kubectl -n "$NAMESPACE" create secret generic grafana-secret \
+  --from-literal=GF_SECURITY_ADMIN_USER="$GF_SECURITY_ADMIN_USER" \
+  --from-literal=GF_SECURITY_ADMIN_PASSWORD="$GF_SECURITY_ADMIN_PASSWORD" \
   --from-literal=GF_DATABASE_NAME="$GF_DATABASE_NAME" \
   --from-literal=GF_DATABASE_USER="$GF_DATABASE_USER" \
   --from-literal=GF_DATABASE_PASSWORD="$GF_DATABASE_PASSWORD" \
