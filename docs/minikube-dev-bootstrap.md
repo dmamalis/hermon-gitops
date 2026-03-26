@@ -61,9 +61,9 @@ Recommended approach:
 Example:
 
 ~~~bash
-cp hermon/examples/dev-secrets.env.example hermon/examples/dev-secrets.env
-# edit hermon/examples/dev-secrets.env locally
-./scripts/bootstrap-hermon-dev-secrets.sh hermon/examples/dev-secrets.env
+cp hermon/local/dev-secrets.env.example hermon/local/dev-secrets.env
+# edit hermon/local/dev-secrets.env locally
+./scripts/bootstrap-hermon-dev-secrets.sh hermon/local/dev-secrets.env
 ~~~
 
 Required secrets:

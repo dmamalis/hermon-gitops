@@ -24,7 +24,7 @@ What it removes:
 
 - Minikube profile `hermon-dev`
 - kubeconfig context / cluster / user entries named `hermon-dev`
-- local file `hermon/examples/dev-secrets.env`
+- local file `hermon/local/dev-secrets.env`
 - standalone kubeconfig export `~/.kube/hermon-dev.yaml`
 - optional k9s cluster cache directories for `hermon-dev`
 
@@ -36,10 +36,10 @@ Use:
 scripts/bootstrap-minikube-argo.sh
 ./scripts/bootstrap-argocd-github-creds.sh ~/.ssh/hermon_minikube_argocd
 
-cp hermon/examples/dev-secrets.env.example hermon/examples/dev-secrets.env
-${EDITOR:-nano} hermon/examples/dev-secrets.env
+cp hermon/local/dev-secrets.env.example hermon/local/dev-secrets.env
+${EDITOR:-nano} hermon/local/dev-secrets.env
 
-./scripts/bootstrap-hermon-dev-secrets.sh hermon/examples/dev-secrets.env
+./scripts/bootstrap-hermon-dev-secrets.sh hermon/local/dev-secrets.env
 
 kubectl --context hermon-dev apply -f apps/hermon-dev.yaml
 kubectl --request-timeout=10s --context hermon-dev -n argocd annotate application hermon-dev \

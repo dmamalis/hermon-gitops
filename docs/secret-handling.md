@@ -81,12 +81,12 @@ Never commit:
 ## Recommended dev workflow
 
 1. Copy the example template locally:
-   - `cp hermon/examples/dev-secrets.env.example hermon/examples/dev-secrets.env`
+   - `cp hermon/local/dev-secrets.env.example hermon/local/dev-secrets.env`
 
 2. Fill in real local values in the untracked file.
 
 3. Create or update the secrets in the target namespace:
-   - `./scripts/bootstrap-hermon-dev-secrets.sh hermon/examples/dev-secrets.env`
+   - `./scripts/bootstrap-hermon-dev-secrets.sh hermon/local/dev-secrets.env`
 
 4. Apply or refresh the Argo CD application.
 

@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ENV_FILE="${1:-hermon/examples/dev-secrets.env}"
+ENV_FILE="${1:-hermon/local/dev-secrets.env}"
 
 if [[ ! -f "$ENV_FILE" ]]; then
   echo "ERROR: env file not found: $ENV_FILE" >&2
-  echo "Example:" >&2
-  echo "  cp hermon/examples/dev-secrets.env.example hermon/examples/dev-secrets.env" >&2
-  echo "  ${EDITOR:-nano} hermon/examples/dev-secrets.env" >&2
+  echo "Create it from the example first:" >&2
+  echo "  mkdir -p hermon/local" >&2
+  echo "  cp hermon/examples/dev-secrets.env.example hermon/local/dev-secrets.env" >&2
+  echo "  \${EDITOR:-nano} hermon/local/dev-secrets.env" >&2
   exit 1
 fi
 
@@ -141,7 +142,5 @@ maybe_create_ttn_secret
 maybe_create_ghcr_secret
 
 echo
+echo "Using env file: $ENV_FILE"
 echo "Done."
-echo
-echo "Verify with:"
-echo "  kubectl -n $NAMESPACE get secrets"
